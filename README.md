@@ -76,7 +76,6 @@ TODO:
 - Swagger
 - Tailwind CSS
 - Vercel
-    - TODO: ???
 
 ## Auth0
 
