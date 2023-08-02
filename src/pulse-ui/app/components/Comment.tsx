@@ -105,6 +105,7 @@ export const Comment = ({ comment, refetch = undefined }: CommentProps) => {
                         handleDelete={handleDelete}
                         handleSave={handleSave}
                         handleCancel={handleCancel}
+                        type="comment"
                     />
                 }
             />

@@ -17,10 +17,11 @@ type CardHeaderTitleProps = {
     handleDelete: () => void;
     handleSave: () => Promise<boolean>;
     handleCancel: () => void;
+    type: string;
 };
 
 export default function CardHeaderTitle(props: CardHeaderTitleProps) {
-    const { userName, name, isMobile, formattedDate, formattedDateTooltip, user, handleEdit, handleDelete, handleSave, handleCancel } = props;
+    const { userName, name, isMobile, formattedDate, formattedDateTooltip, user, handleEdit, handleDelete, handleSave, handleCancel, type } = props;
 
     const handleClick = (event: React.MouseEvent) => {
         event.stopPropagation();
@@ -42,7 +43,7 @@ export default function CardHeaderTitle(props: CardHeaderTitleProps) {
                 </Stack>
             </Stack>
             <Box sx={{ flexGrow: 1 }} />
-            {user?.userName === userName ? <EditButtons onEdit={handleEdit} onDelete={handleDelete} onSave={handleSave} onCancel={handleCancel} type="beat" /> : null}
+            {user?.userName === userName ? <EditButtons onEdit={handleEdit} onDelete={handleDelete} onSave={handleSave} onCancel={handleCancel} type={type} /> : null}
         </Stack>
     ) : (
         <Stack direction="row" alignItems="center">
@@ -56,7 +57,7 @@ export default function CardHeaderTitle(props: CardHeaderTitleProps) {
                 <Typography style={{ fontSize: "0.9rem", paddingLeft: 4 }}>· {formattedDate}</Typography>
             </Tooltip>
             <Box sx={{ flexGrow: 1 }} />
-            {user?.userName === userName ? <EditButtons onEdit={handleEdit} onDelete={handleDelete} onSave={handleSave} onCancel={handleCancel} type="beat" /> : null}
+            {user?.userName === userName ? <EditButtons onEdit={handleEdit} onDelete={handleDelete} onSave={handleSave} onCancel={handleCancel} type={type} /> : null}
         </Stack>
     );
 }

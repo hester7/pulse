@@ -213,6 +213,7 @@ const Post = memo<PostProps>(function Post({ post, addNavigation = false, refetc
                         handleDelete={handleDelete}
                         handleSave={handleSave}
                         handleCancel={handleCancel}
+                        type="beat"
                     />
                 }
             />
