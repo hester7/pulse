@@ -8,6 +8,7 @@ on:
     branches:
       - master
     paths:
+      - '.github/workflows/master_pulse-demo.yml'
       - 'src/pulse-api/**'
   workflow_dispatch:
 
