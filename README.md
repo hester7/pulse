@@ -62,7 +62,6 @@ TODO:
     - Migrations
     - Remote Schemas
     - Seeds
-        - TODO: ???
 - Hot Chocolate
     - Table-level Subscriptions (Notification Service)
 - Material UI
