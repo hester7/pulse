@@ -1,0 +1,76 @@
+table:
+  name: users
+  schema: public
+array_relationships:
+  - name: comments
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: comments
+          schema: public
+  - name: likes
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: likes
+          schema: public
+  - name: posts
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: posts
+          schema: public
+insert_permissions:
+  - role: editor
+    permission:
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+      columns:
+        - email
+        - last_login_at
+        - name
+        - picture
+        - user_id
+        - user_name
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - created_at
+        - name
+        - picture
+        - user_name
+      filter: {}
+  - role: editor
+    permission:
+      columns:
+        - created_at
+        - email
+        - last_login_at
+        - name
+        - picture
+        - updated_at
+        - user_id
+        - user_name
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+update_permissions:
+  - role: editor
+    permission:
+      columns:
+        - email
+        - last_login_at
+        - name
+        - picture
+        - user_name
+      filter:
+        user_id:
+          _eq: X-Hasura-User-Id
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id

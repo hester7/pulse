@@ -1,0 +1,36 @@
+type Mutation {
+  generatePostText(
+    args: GeneratePostTextRequest!
+  ): GeneratedPostText
+}
+
+type Mutation {
+  generateUsers(
+    args: GenerateUsersRequest!
+  ): GeneratedUsers
+}
+
+input GenerateUsersRequest {
+  count: Int!
+}
+
+input GeneratePostTextRequest {
+  category: String!
+}
+
+type User {
+  userId: String!
+  userName: String!
+  email: String!
+  createdAt: timestamptz!
+  updatedAt: timestamptz!
+}
+
+type GeneratedUsers {
+  users: [User!]!
+}
+
+type GeneratedPostText {
+  postText: String!
+}
+

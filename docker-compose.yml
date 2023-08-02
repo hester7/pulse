@@ -1,0 +1,56 @@
+services:
+    postgres:
+        image: postgres
+        restart: always
+        environment:
+            - POSTGRES_PASSWORD=password
+            - POSTGRES_USER=postgres
+            - POSTGRES_DB=pulse
+        ports:
+            - "5433:5432"
+        volumes:
+            - db_data:/var/lib/postgresql/data
+    graphql-engine:
+        image: hasura/graphql-engine:latest
+        ports:
+            - "8081:8080"
+        depends_on:
+            - "postgres"
+        restart: always
+        environment:
+            - HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:password@postgres:5432/pulse
+            - HASURA_GRAPHQL_ENABLE_CONSOLE=true
+            - HASURA_GRAPHQL_DEV_MODE=true
+            - HASURA_GRAPHQL_ENABLED_LOG_TYPES=startup, http-log, webhook-log, websocket-log, query-log
+            - HASURA_GRAPHQL_ENABLE_TELEMETRY=false
+            - HASURA_GRAPHQL_ADMIN_SECRET=${HASURA_GRAPHQL_ADMIN_SECRET}
+            - HASURA_GRAPHQL_JWT_SECRET=${HASURA_GRAPHQL_JWT_SECRET}
+            - HASURA_GRAPHQL_UNAUTHORIZED_ROLE=anonymous
+            - HASURA_PULSE_API_BASE_URL=http://api:5003
+            - HASURA_PULSE_API_KEY=${HASURA_PULSE_API_KEY}
+            - HASURA_PULSE_GRAPHQL_ENDPOINT=http://api:5003/graphql
+    api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=${ASPNETCORE_ENVIRONMENT}
+            - ASPNETCORE_URLS=http://+:5003
+            - ConnectionStrings__SqlConnection=Host=postgres;Username=postgres;Password=password;Database=pulse;IncludeErrorDetail=true;KeepAlive=150;Timeout=300;CommandTimeout=300;
+            - Auth0__Audience=${Auth0__Audience}
+            - Auth0__Authority=${Auth0__Authority}
+            - Auth0__Database=${Auth0__Database}
+            - Auth0__Domain=${Auth0__Domain}
+            - Auth0__WebAppClientId=${Auth0__WebAppClientId}
+            - Auth0__WebAppClientSecret=${Auth0__WebAppClientSecret}
+            - Auth0__M2mClientId=${Auth0__M2mClientId}
+            - Auth0__M2mClientSecret=${Auth0__M2mClientSecret}
+            - Hasura__ApiKey=${HASURA_PULSE_API_KEY}
+        build:
+            context: .
+            dockerfile: Api.Dockerfile
+        ports:
+            - "5003:5003"
+        depends_on:
+            - "postgres"
+        restart: always
+
+volumes:
+    db_data:

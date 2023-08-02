@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Default CSS variables for light theme */
+:root {
+    --foreground-rgb-light: 0, 0, 0;
+    --background-start-rgb-light: 255, 255, 255
+    --background-end-rgb-light: 255, 255, 255;
+}
+
+/* Default CSS variables for dark theme */
+:root {
+    --foreground-rgb-dark: 255, 255, 255;
+    --background-start-rgb-dark: 31, 31, 31;
+    --background-end-rgb-dark: 30, 31, 34;
+}
+
+/* Apply light theme colors if the theme class is 'light' */
+html.light {
+    --foreground-rgb: var(--foreground-rgb-light);
+    --background-start-rgb: var(--background-start-rgb-light);
+    --background-end-rgb: var(--background-end-rgb-light);
+}
+
+/* Apply dark theme colors if the theme class is 'dark' */
+html.dark {
+    --foreground-rgb: var(--foreground-rgb-dark);
+    --background-start-rgb: var(--background-start-rgb-dark);
+    --background-end-rgb: var(--background-end-rgb-dark);
+}
+
+/* Set the body background using the CSS variables */
+body {
+    color: rgb(var(--foreground-rgb));
+    background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+}
