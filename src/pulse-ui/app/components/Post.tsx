@@ -223,7 +223,7 @@ const Post = memo<PostProps>(function Post({ post, addNavigation = false, refetc
                             value={editingText}
                             onChange={handlePostChange}
                             multiline
-                            rows={isMobile ? 12 : 7}
+                            rows={isMobile ? 7 : 12}
                             fullWidth
                             autoFocus
                             color="info"

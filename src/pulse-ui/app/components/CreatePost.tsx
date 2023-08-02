@@ -108,7 +108,7 @@ export const CreatePost = ({ open, setOpen }: CreatePostProps) => {
                         value={post}
                         onChange={handlePostChange}
                         multiline
-                        rows={isMobile ? 12 : 7}
+                        rows={isMobile ? 7 : 12}
                         fullWidth
                         autoFocus
                         style={{ marginTop: 12 }}
