@@ -6,8 +6,6 @@ import { LogoText } from "./LogoText";
 import { User } from "./User";
 import { UserProfile } from "@auth0/nextjs-auth0/client";
 import GuestUser from "./GuestUser";
-import { Dispatch, SetStateAction, useState } from "react";
-import { SignIn } from "../SignIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
 
 function HideOnScroll({ children }: { children: React.ReactElement }) {
@@ -21,15 +19,12 @@ function HideOnScroll({ children }: { children: React.ReactElement }) {
 }
 
 type TopAppBarProps = {
-    isSignInOpen: boolean;
-    setIsSignInOpen: Dispatch<SetStateAction<boolean>>;
     isLoading: boolean;
     user: UserProfile | undefined;
 };
 
 export default function TopAppBar(props: TopAppBarProps) {
-    const { isSignInOpen, setIsSignInOpen, isLoading, user } = props;
-    const [userAvatarRef, setUserAvatarRef] = useState<HTMLElement | null>(null);
+    const { isLoading, user } = props;
 
     return (
         <>
@@ -54,12 +49,11 @@ export default function TopAppBar(props: TopAppBarProps) {
                                 </Avatar>
                             </IconButton>
                         </a>
-                        <div ref={(node) => setUserAvatarRef(node)}>{!isLoading && user ? <User /> : <GuestUser isLoading={isLoading} />}</div>
+                        {!isLoading && user ? <User /> : <GuestUser isLoading={isLoading} />}
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
             <Toolbar />
-            <SignIn open={isSignInOpen} setOpen={setIsSignInOpen} anchorEl={userAvatarRef} />
         </>
     );
 }

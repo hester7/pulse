@@ -1,56 +1,27 @@
 "use client";
 
-import { Typography, Dialog, Box, DialogContent, Stack } from "@mui/material";
+import { Typography, Dialog, Box, DialogContent, Stack, DialogActions, Button } from "@mui/material";
 import { Theme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useCallback, useEffect, useState } from "react";
 import HeadphonesIcon from "@mui/icons-material/Headphones";
-import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import Link from "next/link";
 
 type SignInProps = {
     open: boolean;
     setOpen: (open: boolean) => void;
-    anchorEl: HTMLElement | null;
 };
 
-export const SignIn = ({ open, setOpen, anchorEl }: SignInProps) => {
+export const SignIn = ({ open, setOpen }: SignInProps) => {
     const isMobile = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
-    const [dialogPosition, setDialogPosition] = useState<{ top: number; left: number } | null>(null);
 
-    const handleClose = useCallback(() => {
+    const handleClose = () => {
         setOpen(false);
-    }, [setOpen]);
-
-    const updateDialogPosition = useCallback(() => {
-        if (anchorEl) {
-            const rect = anchorEl.getBoundingClientRect();
-            const top = rect.bottom - 20;
-            const left = rect.left;
-            setDialogPosition({ top, left });
-        }
-    }, [anchorEl]);
-
-    useEffect(() => {
-        if (open) {
-            updateDialogPosition();
-        }
-    }, [open, updateDialogPosition]);
+    };
 
     return (
-        <Dialog
-            open={open}
-            onClose={handleClose}
-            PaperProps={{
-                style: {
-                    position: "fixed",
-                    top: dialogPosition?.top,
-                    left: dialogPosition?.left,
-                    transform: "translate(-100%, 0)",
-                },
-            }}
-        >
+        <Dialog open={open} onClose={handleClose}>
             <Box>
-                <DialogContent>
+                <DialogContent sx={{ paddingBottom: 2 }}>
                     <Stack direction="row" spacing={2} alignItems="center">
                         <HeadphonesIcon fontSize="large" />
                         <div>
@@ -58,14 +29,15 @@ export const SignIn = ({ open, setOpen, anchorEl }: SignInProps) => {
                                 Sign in to start making beats
                             </Typography>
                         </div>
-                        <ArrowOutwardIcon
-                            fontSize="large"
-                            sx={(theme) => ({
-                                color: theme.palette.primary.main,
-                            })}
-                        />
                     </Stack>
                 </DialogContent>
+                <DialogActions sx={{ paddingLeft: "24px", paddingRight: "24px", paddingBottom: "24px" }}>
+                    <Link href="/api/auth/login">
+                        <Button variant="contained" color="primary" fullWidth sx={{ borderRadius: 50 }}>
+                            Sign In
+                        </Button>
+                    </Link>
+                </DialogActions>
             </Box>
         </Dialog>
     );

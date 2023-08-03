@@ -6,6 +6,7 @@ import TopAppBar from "./TopAppBar";
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { CreatePost } from "../CreatePost";
 import { Toolbar } from "@mui/material";
+import { SignIn } from "../SignIn";
 
 type AppBarsProps = {
     children: React.ReactNode;
@@ -26,8 +27,9 @@ export const AppBars = ({ children }: AppBarsProps) => {
 
     return (
         <>
-            <TopAppBar isSignInOpen={isSignInOpen} setIsSignInOpen={setIsSignInOpen} isLoading={isLoading} user={user} />
+            <TopAppBar isLoading={isLoading} user={user} />
             <CreatePost open={isCreatePostOpen} setOpen={setIsCreatePostOpen} />
+            <SignIn open={isSignInOpen} setOpen={setIsSignInOpen} />
             {children}
             <Toolbar />
             <BottomAppBar handleFabClick={handleFabClick} />
