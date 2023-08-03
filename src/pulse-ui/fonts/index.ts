@@ -1,10 +1,11 @@
-import { Inter } from "next/font/google";
-import localFont from "next/font/local";
+import { Inter, Tourney } from "next/font/google";
 
 export const inter = Inter({
     subsets: ["latin"],
     display: "swap",
 });
 
-// TODO: does this need to be local?
-export const logo = localFont({ src: "./Tourney-VariableFont_wdth,wght.ttf" });
+export const logo = Tourney({
+    subsets: ["latin"],
+    display: "swap",
+});
