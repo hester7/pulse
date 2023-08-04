@@ -24,7 +24,8 @@ internal static class SecurityRegistration
             })
             .AddScoped<IAuthorizationHandler, AdminAuthHandler>()
             .AddScoped<CurrentUserHttpService>()
-            .Configure<HasuraOptions>(configuration.GetSection("Hasura"));
+            .Configure<HasuraOptions>(configuration.GetSection("Hasura"))
+            .Configure<OpenAiOptions>(configuration.GetSection("OpenAI"));
 
     public static IApplicationBuilder UseSecurity(this IApplicationBuilder app) =>
         app.UseCors()

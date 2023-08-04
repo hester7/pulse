@@ -1,4 +1,4 @@
-import { PaletteMode, alpha, createTheme as ct, darken, lighten } from "@mui/material";
+import { PaletteMode, createTheme as ct } from "@mui/material";
 
 export const DEFAULT_THEME: "dark" | "light" = "dark";
 

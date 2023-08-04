@@ -43,6 +43,7 @@ services:
             - Auth0__M2mClientId=${Auth0__M2mClientId}
             - Auth0__M2mClientSecret=${Auth0__M2mClientSecret}
             - Hasura__ApiKey=${HASURA_PULSE_API_KEY}
+            - OpenAI__ApiKey=${OpenAI__ApiKey}
         build:
             context: .
             dockerfile: Api.Dockerfile

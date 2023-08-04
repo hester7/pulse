@@ -69,6 +69,7 @@ TODO:
 - Next.js
 - NodaTime
 - Npgsql
+- OpenAI
 - PostgreSQL
     - pg_notify
 - React

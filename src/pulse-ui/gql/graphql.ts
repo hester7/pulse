@@ -1769,6 +1769,13 @@ export type DeletePostMutationVariables = Exact<{
 
 export type DeletePostMutation = { __typename?: 'mutation_root', delete_posts_by_pk?: { __typename?: 'posts', post_id: any } | null };
 
+export type GeneratePostTextMutationVariables = Exact<{
+  category: Scalars['String']['input'];
+}>;
+
+
+export type GeneratePostTextMutation = { __typename?: 'mutation_root', generatePostText?: { __typename?: 'GeneratedPostText', postText: string } | null };
+
 export type InsertCommentMutationVariables = Exact<{
   comment_text: Scalars['String']['input'];
   user_id: Scalars['String']['input'];
@@ -1972,6 +1979,39 @@ export function useDeletePostMutation(baseOptions?: Apollo.MutationHookOptions<D
 export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutation>;
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
+export const GeneratePostTextDocument = gql`
+    mutation GeneratePostText($category: String!) {
+  generatePostText(args: {category: $category}) {
+    postText
+  }
+}
+    `;
+export type GeneratePostTextMutationFn = Apollo.MutationFunction<GeneratePostTextMutation, GeneratePostTextMutationVariables>;
+
+/**
+ * __useGeneratePostTextMutation__
+ *
+ * To run a mutation, you first call `useGeneratePostTextMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGeneratePostTextMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [generatePostTextMutation, { data, loading, error }] = useGeneratePostTextMutation({
+ *   variables: {
+ *      category: // value for 'category'
+ *   },
+ * });
+ */
+export function useGeneratePostTextMutation(baseOptions?: Apollo.MutationHookOptions<GeneratePostTextMutation, GeneratePostTextMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GeneratePostTextMutation, GeneratePostTextMutationVariables>(GeneratePostTextDocument, options);
+      }
+export type GeneratePostTextMutationHookResult = ReturnType<typeof useGeneratePostTextMutation>;
+export type GeneratePostTextMutationResult = Apollo.MutationResult<GeneratePostTextMutation>;
+export type GeneratePostTextMutationOptions = Apollo.BaseMutationOptions<GeneratePostTextMutation, GeneratePostTextMutationVariables>;
 export const InsertCommentDocument = gql`
     mutation InsertComment($comment_text: String!, $user_id: String!, $post_id: uuid!) {
   insert_comments_one(

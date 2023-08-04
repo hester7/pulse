@@ -1,5 +1,5 @@
 import IconButton from "@mui/material/IconButton";
-import { AppIcon } from "../svg/AppIconRectangle";
+import { AppIcon } from "../svg/AppIcon";
 import Link from "next/link";
 
 type LogoButtonProps = {
