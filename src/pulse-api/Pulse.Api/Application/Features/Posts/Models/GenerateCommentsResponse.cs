@@ -2,4 +2,4 @@
 
 namespace Pulse.Api.Application.Features.Posts.Models;
 
-public sealed record GeneratePostsResponse(IEnumerable<Post> Posts);
+public sealed record GenerateCommentsResponse(IEnumerable<Comment> Comments);

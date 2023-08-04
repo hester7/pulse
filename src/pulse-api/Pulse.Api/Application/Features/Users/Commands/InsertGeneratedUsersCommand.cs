@@ -7,11 +7,11 @@ using Pulse.Api.Domain.Models;
 
 namespace Pulse.Api.Application.Features.Users.Commands;
 
-internal sealed class InsertUsersCommand : DapperTextCommand
+internal sealed class InsertGeneratedUsersCommand : DapperTextCommand
 {
     private readonly User[] _users;
 
-    public InsertUsersCommand(GenerateUsersRequest request)
+    public InsertGeneratedUsersCommand(GenerateUsersRequest request)
     {
         if (request.Count == 0)
         {
@@ -33,7 +33,19 @@ internal sealed class InsertUsersCommand : DapperTextCommand
             };
         }
 
-        Parameters = GetParameters();
+        var parameters = new DynamicParameters();
+
+        for (var i = 0; i < _users.Length; i++)
+        {
+            var user = _users[i];
+            parameters.Add($"UserId{i}", user.UserId);
+            parameters.Add($"UserName{i}", user.UserName);
+            parameters.Add($"Email{i}", user.Email);
+            parameters.Add($"Name{i}", user.Name);
+            parameters.Add($"Picture{i}", user.Picture);
+        }
+
+        Parameters = parameters;
     }
 
     public override string Text
@@ -59,22 +71,5 @@ internal sealed class InsertUsersCommand : DapperTextCommand
 
             return sb.ToString();
         }
-    }
-
-    private DynamicParameters GetParameters()
-    {
-        var parameters = new DynamicParameters();
-
-        for (var i = 0; i < _users.Length; i++)
-        {
-            var user = _users[i];
-            parameters.Add($"UserId{i}", user.UserId);
-            parameters.Add($"UserName{i}", user.UserName);
-            parameters.Add($"Email{i}", user.Email);
-            parameters.Add($"Name{i}", user.Name);
-            parameters.Add($"Picture{i}", user.Picture);
-        }
-
-        return parameters;
     }
 }

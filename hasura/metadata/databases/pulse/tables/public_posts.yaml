@@ -63,3 +63,49 @@ delete_permissions:
       filter:
         user_id:
           _eq: X-Hasura-User-Id
+event_triggers:
+  - name: generateComments
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook: '{{HASURA_PULSE_API_BASE_URL}}/posts/generate-comments'
+    headers:
+      - name: x-hasura-api-key
+        value_from_env: HASURA_PULSE_API_KEY
+    request_transform:
+      body:
+        action: transform
+        template: |-
+          {
+            "postId": {{$body.event.data.new.post_id}},
+            "postText": {{$body.event.data.new.post_text}}
+          }
+      template_engine: Kriti
+      version: 2
+  - name: generateLikes
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook: '{{HASURA_PULSE_API_BASE_URL}}/posts/generate-likes'
+    headers:
+      - name: x-hasura-api-key
+        value_from_env: HASURA_PULSE_API_KEY
+    request_transform:
+      body:
+        action: transform
+        template: |-
+          {
+            "postId": {{$body.event.data.new.post_id}}
+          }
+      template_engine: Kriti
+      version: 2

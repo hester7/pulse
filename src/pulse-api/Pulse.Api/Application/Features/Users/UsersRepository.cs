@@ -20,7 +20,7 @@ public sealed class UsersRepository
 
     public async Task<GenerateUsersResponse> GenerateAsync(GenerateUsersRequest request, CancellationToken cancellationToken)
     {
-        var rowsAffected = await _executor.ExecuteAsync(new InsertUsersCommand(request), cancellationToken);
+        var rowsAffected = await _executor.ExecuteAsync(new InsertGeneratedUsersCommand(request), cancellationToken);
         if (rowsAffected == 0)
             return new GenerateUsersResponse(Enumerable.Empty<User>());
 

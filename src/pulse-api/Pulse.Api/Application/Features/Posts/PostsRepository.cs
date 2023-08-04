@@ -33,48 +33,72 @@ public sealed class PostsRepository
         return new GeneratePostTextResponse(postText);
     }
 
-    public async Task<GeneratePostsResponse> GeneratePostsAsync(GeneratePostsRequest request, CancellationToken cancellationToken)
+    public async Task<GeneratePostResponse> GeneratePostAsync(GeneratePostRequest request, CancellationToken cancellationToken)
     {
-        var posts = new List<Post>();
-        var comments = new List<Comment>();
-        var likes = new List<Like>();
+        var users = (await _executor.QueryAsync<User>(new GetUsersCommand(), cancellationToken)).ToList();
+
+        var (postText, _) = await GeneratePostAndComments();
+        var post = new Post
+        {
+            PostText = postText,
+            UserId = GetRandomUser(users).UserId
+        };
+
+        await _executor.ExecuteAsync(new InsertPostCommand(post), cancellationToken);
+
+        return new GeneratePostResponse(post);
+    }
+
+    public async Task<GenerateCommentsResponse> GenerateCommentsAsync(GenerateCommentsRequest request, CancellationToken cancellationToken)
+    {
+        var count = Random.Shared.Next(2, 6);
+        var comments = new Comment[count];
+        var commentsText = await GenerateComments(request.PostText, count);
 
         var users = (await _executor.QueryAsync<User>(new GetUsersCommand(), cancellationToken)).ToList();
 
-        for (var i = 0; i < request.Count; i++)
+        for (var i = 0; i < commentsText.Length; i++)
         {
-            var (postText, commentsText) = await GeneratePostAndComments(generateComments: true);
-            var postId = Guid.NewGuid();
-            var post = new Post
+            comments[i] = new Comment
             {
-                PostId = postId,
-                PostText = postText,
+                CommentText = commentsText[i],
+                PostId = request.PostId,
                 UserId = GetRandomUser(users).UserId
             };
-            posts.Add(post);
-
-            comments.AddRange(commentsText
-                .Select(commentText => new Comment
-                {
-                    CommentText = commentText,
-                    PostId = postId,
-                    UserId = GetRandomUser(users).UserId
-                }));
-
-            var count = Random.Shared.Next(1, 10);
-            for (var j = 0; j < count; j++)
-            {
-                likes.Add(new Like
-                {
-                    PostId = postId,
-                    UserId = GetRandomUser(users).UserId
-                });
-            }
         }
 
-        await _executor.ExecuteAsync(new InsertPostsCommand(posts.ToArray(), comments.ToArray(), likes.ToArray()), cancellationToken);
+        // TODO: use quartz
+        foreach (var comment in comments)
+        {
+            await _executor.ExecuteAsync(new InsertCommentCommand(comment), cancellationToken);
+        }
 
-        return new GeneratePostsResponse(posts);
+        return new GenerateCommentsResponse(comments);
+    }
+
+    public async Task<GenerateLikesResponse> GenerateLikesAsync(GenerateLikesRequest request, CancellationToken cancellationToken)
+    {
+        var count = Random.Shared.Next(1, 10);
+        var likes = new Like[count];
+
+        var users = (await _executor.QueryAsync<User>(new GetUsersCommand(), cancellationToken)).ToList();
+
+        for (var i = 0; i < count; i++)
+        {
+            likes[i] = new Like
+            {
+                PostId = request.PostId,
+                UserId = GetRandomUser(users).UserId
+            };
+        }
+
+        // TODO: use quartz
+        foreach (var like in likes)
+        {
+            await _executor.ExecuteAsync(new InsertLikeCommand(like), cancellationToken);
+        }
+
+        return new GenerateLikesResponse(likes);
     }
 
     private static User GetRandomUser(List<User> users)
@@ -115,5 +139,26 @@ public sealed class PostsRepository
         }
 
         return (postText, Array.Empty<string>());
+    }
+
+    private async Task<string[]> GenerateComments(string postText, int count)
+    {
+        var chat = _openAiClient.Chat.CreateConversation(new ChatRequest { Temperature = 0.9 });
+
+        // Give instruction as System
+        chat.AppendSystemMessage("You have already generated a random social media post." +
+                                 "Now, you are going to generate comments for that post. " +
+                                 "Your response will only include the comments and never an acknowledgement of the request. " +
+                                 "The comments will be generated as a single string. " +
+                                 "Separate each comment with a \"|\" character. " +
+                                 "Do not wrap the comments in any kind of quotes.");
+
+        // Ask it a question
+        chat.AppendUserInput($"Generate {count} random comments for the following social media post: \"{postText}\"");
+
+        // Get the response
+        var response = await chat.GetResponseFromChatbotAsync();
+        var comments = response.Split('|', StringSplitOptions.TrimEntries);
+        return comments;
     }
 }

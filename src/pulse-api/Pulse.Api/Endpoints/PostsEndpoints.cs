@@ -53,10 +53,10 @@ internal static class PostsEndpoints
             .RequirePerUserRateLimit();
 
         group.MapPost("/generate-post",
-                async Task<Ok<GeneratePostsResponse>> ([FromServices] PulseAppService app,
+                async Task<Ok<GeneratePostResponse>> ([FromServices] PulseAppService app,
                     [Service] CurrentUserHttpService currentUserService,
                     [FromServices] ILogger logger,
-                    GeneratePostsRequest request,
+                    GeneratePostRequest request,
                     CancellationToken cancellationToken) =>
                 {
                     logger.Information("Endpoint: {Endpoint}; Verb: {Verb}; Request: {Request}",
@@ -64,7 +64,45 @@ internal static class PostsEndpoints
                         "POST",
                         request);
 
-                    var response = await app.Posts.GeneratePostsAsync(request, cancellationToken);
+                    var response = await app.Posts.GeneratePostAsync(request, cancellationToken);
+                    return TypedResults.Ok(response);
+                })
+            .AddEndpointFilter<HasuraApiKeyEndpointFilter>()
+            .AddEndpointFilter<UnhandledExceptionFilter>()
+            .RequirePerUserRateLimit();
+
+        group.MapPost("/generate-comments",
+                async Task<Ok<GenerateCommentsResponse>> ([FromServices] PulseAppService app,
+                    [Service] CurrentUserHttpService currentUserService,
+                    [FromServices] ILogger logger,
+                    GenerateCommentsRequest request,
+                    CancellationToken cancellationToken) =>
+                {
+                    logger.Information("Endpoint: {Endpoint}; Verb: {Verb}; Request: {Request}",
+                        "/posts/generate-comments",
+                        "POST",
+                        request);
+
+                    var response = await app.Posts.GenerateCommentsAsync(request, cancellationToken);
+                    return TypedResults.Ok(response);
+                })
+            .AddEndpointFilter<HasuraApiKeyEndpointFilter>()
+            .AddEndpointFilter<UnhandledExceptionFilter>()
+            .RequirePerUserRateLimit();
+
+        group.MapPost("/generate-likes",
+                async Task<Ok<GenerateLikesResponse>> ([FromServices] PulseAppService app,
+                    [Service] CurrentUserHttpService currentUserService,
+                    [FromServices] ILogger logger,
+                    GenerateLikesRequest request,
+                    CancellationToken cancellationToken) =>
+                {
+                    logger.Information("Endpoint: {Endpoint}; Verb: {Verb}; Request: {Request}",
+                        "/posts/generate-likes",
+                        "POST",
+                        request);
+
+                    var response = await app.Posts.GenerateLikesAsync(request, cancellationToken);
                     return TypedResults.Ok(response);
                 })
             .AddEndpointFilter<HasuraApiKeyEndpointFilter>()

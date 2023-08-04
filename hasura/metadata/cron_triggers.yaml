@@ -2,8 +2,7 @@
   webhook: '{{HASURA_PULSE_API_BASE_URL}}/posts/generate-post'
   schedule: 0 */6 * * *
   include_in_metadata: true
-  payload:
-    count: 1
+  payload: {}
   headers:
     - name: x-hasura-api-key
       value_from_env: HASURA_PULSE_API_KEY
