@@ -1,16 +1,17 @@
 ﻿using System.Text;
 using Bogus;
+using Dapper;
 using Pulse.Api.Application.Features.Users.Models;
 using Pulse.Api.Dapper.Commands;
 using Pulse.Api.Domain.Models;
 
 namespace Pulse.Api.Application.Features.Users.Commands;
 
-internal sealed class SaveUsersCommand : DapperTextCommand
+internal sealed class InsertUsersCommand : DapperTextCommand
 {
     private readonly User[] _users;
 
-    public SaveUsersCommand(GenerateUsersRequest request)
+    public InsertUsersCommand(GenerateUsersRequest request)
     {
         if (request.Count == 0)
         {
@@ -32,10 +33,7 @@ internal sealed class SaveUsersCommand : DapperTextCommand
             };
         }
 
-        Parameters = new
-        {
-            Users = _users
-        };
+        Parameters = GetParameters();
     }
 
     public override string Text
@@ -52,9 +50,8 @@ internal sealed class SaveUsersCommand : DapperTextCommand
 
             for (var i = 0; i < _users.Length; i++)
             {
-                var user = _users[i];
                 sb.Append(@$"
-                {(i == 0 ? string.Empty : ", ")}('{user.UserId}', '{user.UserName}', '{user.Email}', '{user.Name}', '{user.Picture}')");
+                {(i == 0 ? string.Empty : ", ")}(@UserId{i}, @UserName{i}, @Email{i}, @Name{i}, @Picture{i})");
             }
 
             sb.Append(@"
@@ -62,5 +59,22 @@ internal sealed class SaveUsersCommand : DapperTextCommand
 
             return sb.ToString();
         }
+    }
+
+    private DynamicParameters GetParameters()
+    {
+        var parameters = new DynamicParameters();
+
+        for (var i = 0; i < _users.Length; i++)
+        {
+            var user = _users[i];
+            parameters.Add($"UserId{i}", user.UserId);
+            parameters.Add($"UserName{i}", user.UserName);
+            parameters.Add($"Email{i}", user.Email);
+            parameters.Add($"Name{i}", user.Name);
+            parameters.Add($"Picture{i}", user.Picture);
+        }
+
+        return parameters;
     }
 }

@@ -20,11 +20,11 @@ public sealed class UsersRepository
 
     public async Task<GenerateUsersResponse> GenerateAsync(GenerateUsersRequest request, CancellationToken cancellationToken)
     {
-        var rowsAffected = await _executor.ExecuteAsync(new SaveUsersCommand(request), cancellationToken);
+        var rowsAffected = await _executor.ExecuteAsync(new InsertUsersCommand(request), cancellationToken);
         if (rowsAffected == 0)
             return new GenerateUsersResponse(Enumerable.Empty<User>());
 
-        var users = await _executor.QueryAsync<User>(new GetUsersCommand(request), cancellationToken);
+        var users = await _executor.QueryAsync<User>(new GetGeneratedUsersCommand(request), cancellationToken);
         return new GenerateUsersResponse(users);
     }
 }

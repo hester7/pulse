@@ -3,6 +3,7 @@ using OpenAI_API;
 using OpenAI_API.Chat;
 using Pulse.Api.Application.Features.Posts.Commands;
 using Pulse.Api.Application.Features.Posts.Models;
+using Pulse.Api.Application.Features.Users.Commands;
 using Pulse.Api.Dapper;
 using Pulse.Api.Domain.Models;
 using Pulse.Api.Security;
@@ -35,24 +36,62 @@ public sealed class PostsRepository
     public async Task<GeneratePostsResponse> GeneratePostsAsync(GeneratePostsRequest request, CancellationToken cancellationToken)
     {
         var posts = new List<Post>();
+        var comments = new List<Comment>();
+        var likes = new List<Like>();
+
+        var users = (await _executor.QueryAsync<User>(new GetUsersCommand(), cancellationToken)).ToList();
+
         for (var i = 0; i < request.Count; i++)
         {
-            var (postText, comments) = await GeneratePostAndComments(generateComments: true);
-            // TODO: create random number of likes
-            // TODO: save to database
+            var (postText, commentsText) = await GeneratePostAndComments(generateComments: true);
+            var postId = Guid.NewGuid();
+            var post = new Post
+            {
+                PostId = postId,
+                PostText = postText,
+                UserId = GetRandomUser(users).UserId
+            };
+            posts.Add(post);
+
+            comments.AddRange(commentsText
+                .Select(commentText => new Comment
+                {
+                    CommentText = commentText,
+                    PostId = postId,
+                    UserId = GetRandomUser(users).UserId
+                }));
+
+            var count = Random.Shared.Next(1, 10);
+            for (var j = 0; j < count; j++)
+            {
+                likes.Add(new Like
+                {
+                    PostId = postId,
+                    UserId = GetRandomUser(users).UserId
+                });
+            }
         }
+
+        await _executor.ExecuteAsync(new InsertPostsCommand(posts.ToArray(), comments.ToArray(), likes.ToArray()), cancellationToken);
 
         return new GeneratePostsResponse(posts);
     }
 
-    private async Task<(string, string[])> GeneratePostAndComments(string? category = null, bool generateComments = false)
+    private static User GetRandomUser(List<User> users)
+    {
+        var randomUserIndex = Random.Shared.Next(0, users.Count);
+        return users[randomUserIndex];
+    }
+
+    private async Task<(string PostText, string[] CommentsText)> GeneratePostAndComments(string? category = null, bool generateComments = false)
     {
         var chat = _openAiClient.Chat.CreateConversation(new ChatRequest { Temperature = 0.9 });
 
         // Give instruction as System
         chat.AppendSystemMessage("You are going to generate a random social media post based on a category. " +
                                  "Your response will only include the post and never an acknowledgement of the request. " +
-                                 "The character limit is 480 but try to keep your post between 28 and 140 characters.");
+                                 "The character limit is 480 but try to keep your post between 28 and 140 characters. " +
+                                 "Do not wrap the post in any kind of quotes.");
 
         // Ask it a question
         var promptText = "Create a random social media post";
