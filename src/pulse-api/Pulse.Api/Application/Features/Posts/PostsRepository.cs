@@ -92,7 +92,7 @@ public sealed class PostsRepository
             };
         }
 
-        // TODO: use quartz
+        // TODO: use quartz!
         foreach (var like in likes)
         {
             await _executor.ExecuteAsync(new InsertLikeCommand(like), cancellationToken);
