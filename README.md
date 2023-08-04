@@ -8,7 +8,7 @@ https://pulse-hester.vercel.app/
 
 The application uses Hasura as its data API platform. It leverages most features of Hasura including migrations, seeds, actions, triggers, remote schemas, and authorization.
 The front end is built using Next.js 13 with its new App Router and new/experimental packages from Apollo and Auth0.
-The back end is built using Hasura and ASP.NET Core 7 with Minimal API and Hot Chocolate and integrates with OpenAI.
+The back end is built using Hasura and ASP.NET Core 7 with Minimal API and Hot Chocolate and uses OpenAI to generate random posts/comments.
 
 Hasura is hosted on Hasura Cloud.
 The database is PostgreSQL 15, hosted on Azure.
