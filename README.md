@@ -1,11 +1,20 @@
 # pulse
 
-TODO:
-https://lmpprices.vercel.app/
+https://pulse-hester.vercel.app/
 
 # Project Description
 
-TODO:
+`pulse` is a social media application, similar to Twitter, that allows users to create and share posts known as "beats" (similar to tweets). Users can engage with these beats by leaving comments and likes. The application demonstrates a wide array of technologies.
+
+The application uses Hasura as its data API platform. It leverages most features of Hasura including migrations, seeds, actions, triggers, remote schemas, and authorization.
+The front end is built using Next.js 13 with its new App Router and new/experimental packages from Apollo and Auth0.
+The back end is built using Hasura and ASP.NET Core 7 with Minimal API and Hot Chocolate and integrates with OpenAI.
+
+Hasura is hosted on Hasura Cloud.
+The database is PostgreSQL 15, hosted on Azure.
+The API is hosted on Azure App Service.
+The front end is hosted on Vercel.
+The app is secured using Auth0.
 
 ## Getting Started
 
@@ -56,6 +65,8 @@ TODO:
 - Hasura
     - Actions
     - Authorization (RBAC)
+    - Event Triggers
+        - TODO:
     - Cron Triggers
         - TODO: add a cron trigger to add random posts
     - Hasura Cloud
