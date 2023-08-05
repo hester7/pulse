@@ -128,7 +128,6 @@ Create the following .env files. Each .env file has a template file that you can
         - Note: the need to do this might be obsoleted by https://github.com/ChilliCream/graphql-platform/pull/6387
 - Luxon
 - Material UI
-- Minimal API
 - Next.js
 - NodaTime
 - Npgsql
