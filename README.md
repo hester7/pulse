@@ -55,9 +55,11 @@ The app is secured using Auth0.
     - Health Checks
 - Auth0
     - Actions
+    - Next.js SDK
 - Azure
     - App Service
     - Azure Database for PostgreSQL
+- Bogus
 - Dapper
 - Docker
 - GitHub Actions
@@ -75,6 +77,7 @@ The app is secured using Auth0.
     - Seeds
 - Hot Chocolate
     - Table-level Subscriptions (Notification Service)
+- Luxon
 - Material UI
 - Minimal API
 - Next.js
@@ -83,10 +86,12 @@ The app is secured using Auth0.
 - OpenAI
 - PostgreSQL
     - pg_notify
+- Quartz
 - React
 - Serilog
 - Swagger
 - Tailwind CSS
+- TypeScript
 - Vercel
 
 ## Auth0

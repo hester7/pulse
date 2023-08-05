@@ -2,11 +2,13 @@
 using OpenAI_API;
 using OpenAI_API.Chat;
 using Pulse.Api.Application.Features.Posts.Commands;
+using Pulse.Api.Application.Features.Posts.Jobs;
 using Pulse.Api.Application.Features.Posts.Models;
 using Pulse.Api.Application.Features.Users.Commands;
 using Pulse.Api.Dapper;
 using Pulse.Api.Domain.Models;
 using Pulse.Api.Security;
+using Quartz;
 
 namespace Pulse.Api.Application.Features.Posts;
 
@@ -14,11 +16,13 @@ public sealed class PostsRepository
 {
     private readonly DapperExecutor _executor;
     private readonly OpenAIAPI _openAiClient;
+    private readonly ISchedulerFactory _schedulerFactory;
 
-    public PostsRepository(DapperExecutor executor, IOptions<OpenAiOptions> openAiOptions)
+    public PostsRepository(DapperExecutor executor, IOptions<OpenAiOptions> openAiOptions, ISchedulerFactory schedulerFactory)
     {
         _executor = executor;
         _openAiClient = new OpenAIAPI(openAiOptions.Value.ApiKey);
+        _schedulerFactory = schedulerFactory;
     }
 
     public async Task<PostWithCommentsResponse?> GetPostWithCommentsAsync(PostWithCommentsRequest request, CancellationToken cancellationToken)
@@ -67,10 +71,14 @@ public sealed class PostsRepository
             };
         }
 
-        // TODO: use quartz
+        var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
+        var job = JobBuilder.Create<GenerateCommentJob>().Build();
+        await scheduler.AddJob(job, true, true, cancellationToken);
+
         foreach (var comment in comments)
         {
-            await _executor.ExecuteAsync(new InsertCommentCommand(comment), cancellationToken);
+            var jobData = new JobDataMap { { GenerateCommentJob.JobDataKey, comment } };
+            await scheduler.TriggerJob(GenerateCommentJob.JobKey, jobData, cancellationToken);
         }
 
         return new GenerateCommentsResponse(comments);
@@ -92,10 +100,14 @@ public sealed class PostsRepository
             };
         }
 
-        // TODO: use quartz
+        var scheduler = await _schedulerFactory.GetScheduler(cancellationToken);
+        var job = JobBuilder.Create<GenerateLikeJob>().Build();
+        await scheduler.AddJob(job, true, true, cancellationToken);
+
         foreach (var like in likes)
         {
-            await _executor.ExecuteAsync(new InsertLikeCommand(like), cancellationToken);
+            var jobData = new JobDataMap { { GenerateLikeJob.JobDataKey, like } };
+            await scheduler.TriggerJob(GenerateLikeJob.JobKey, jobData, cancellationToken);
         }
 
         return new GenerateLikesResponse(likes);
