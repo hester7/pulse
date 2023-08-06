@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, createContext, useContext, useEffect, useMemo
 import { useUser } from "@auth0/nextjs-auth0/client";
 import { Session } from "@auth0/nextjs-auth0";
 import { Users_Update_Column, useUpsertUserMutation, useUserByPkLazyQuery } from "@/gql/graphql";
+import { useRouter } from "next/navigation";
 
 export interface CurrentUserContextState {
     user: User | null | undefined;
@@ -26,6 +27,7 @@ type CurrentUserProviderProps = {
 };
 
 export const CurrentUserProvider = ({ children, session }: CurrentUserProviderProps) => {
+    const router = useRouter();
     const { isLoading: isUserLoading, user: auth0User } = useUser();
     const [user, setUser] = useState<User | null | undefined>(undefined);
     const [getUserByPkQuery] = useUserByPkLazyQuery();
@@ -35,8 +37,14 @@ export const CurrentUserProvider = ({ children, session }: CurrentUserProviderPr
         if (isUserLoading || !auth0User || !session) return;
 
         const getUserByPk = async (userId: string) => {
-            const { data } = await getUserByPkQuery({ variables: { user_id: userId } });
+            const { data, error } = await getUserByPkQuery({ variables: { user_id: userId } });
             const user = data?.users_by_pk;
+
+            if (error) {
+                //router.push("/api/auth/logout");
+                console.error(error);
+                return;
+            }
 
             if (user) {
                 setUser({
@@ -64,7 +72,7 @@ export const CurrentUserProvider = ({ children, session }: CurrentUserProviderPr
             }
         };
         getUserByPk(auth0User.sub!);
-    }, [auth0User, getUserByPkQuery, isUserLoading, session, upsertUser]);
+    }, [auth0User, getUserByPkQuery, isUserLoading, router, session, upsertUser]);
 
     const value = useMemo<CurrentUserContextState>(() => {
         return {
