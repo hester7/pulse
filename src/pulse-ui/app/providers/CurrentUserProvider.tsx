@@ -43,6 +43,7 @@ export const CurrentUserProvider = ({ children, session }: CurrentUserProviderPr
             if (error) {
                 //router.push("/api/auth/logout");
                 console.error(error);
+                alert(error);
                 return;
             }
 
