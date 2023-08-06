@@ -41,9 +41,7 @@ export const CurrentUserProvider = ({ children, session }: CurrentUserProviderPr
             const user = data?.users_by_pk;
 
             if (error) {
-                //router.push("/api/auth/logout");
-                console.error(error);
-                alert(error);
+                router.push("/api/auth/logout");
                 return;
             }
 
