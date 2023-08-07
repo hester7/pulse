@@ -17,15 +17,15 @@ RESOURCES:
 const GET = withApiAuthRequired(async () => {
     const session: Session | null | undefined = await getSession();
 
-    if (!session || !session.user) {
-        return null;
+    if (!session) {
+        return NextResponse.json(null);
     }
 
     if (session.accessToken && session.accessTokenExpiresAt) {
         // Check if the access token has expired
         const currentTime = Math.floor(Date.now() / 1000);
         if (session.accessTokenExpiresAt > currentTime) {
-            return session.accessToken;
+            return NextResponse.json(session);
         }
     }
 
@@ -47,11 +47,11 @@ const GET = withApiAuthRequired(async () => {
             const data = await refreshResponse.json();
             const newAccessToken = data.access_token;
             session.accessToken = newAccessToken;
-            return NextResponse.json(newAccessToken);
+            return NextResponse.json(session);
         }
     }
 
-    return null;
+    return NextResponse.json(null);
 });
 
 export { GET };
