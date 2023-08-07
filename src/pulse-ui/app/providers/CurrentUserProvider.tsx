@@ -41,7 +41,6 @@ export const CurrentUserProvider = ({ children, session }: CurrentUserProviderPr
             const user = data?.users_by_pk;
 
             if (error) {
-                // TODO: is refresh token working?
                 router.push("/api/auth/login");
                 return;
             }
