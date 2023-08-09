@@ -16,7 +16,7 @@ RESOURCES:
 - https://github.com/auth0/nextjs-auth0/issues/169
 */
 
-const GET = withApiAuthRequired(async (req: NextApiRequest, res: NextApiResponse) => {
+const GET = withApiAuthRequired(async (/*req: NextApiRequest, res: NextApiResponse*/) => {
     const session: Session | null | undefined = await getSession();
 
     return NextResponse.json(session ?? null);
