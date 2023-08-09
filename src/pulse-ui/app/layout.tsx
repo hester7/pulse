@@ -3,6 +3,7 @@ import Providers from "./providers/Providers";
 import "./globals.css";
 import { defaultMetadata } from "./metadata";
 import { AppBars } from "./components/layout/AppBars";
+import SessionProvider from "./providers/SessionProvider";
 
 export const metadata = defaultMetadata;
 
@@ -12,7 +13,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
         <head />
         <body className={inter.className}>
             <Providers>
-                <AppBars>{children}</AppBars>
+                <SessionProvider>
+                    <AppBars>{children}</AppBars>
+                </SessionProvider>
             </Providers>
         </body>
     </html>

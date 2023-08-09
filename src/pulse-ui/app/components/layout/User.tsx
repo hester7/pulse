@@ -1,15 +1,15 @@
 "use client";
 
 import { Avatar, Box, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { useState } from "react";
 import FaceIcon from "@mui/icons-material/Face";
 import Person2Icon from "@mui/icons-material/Person2";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Link from "next/link";
+import { useCurrentUser } from "@/app/providers/CurrentUserProvider";
 
 export const User = () => {
-    const { user } = useUser();
+    const { user } = useCurrentUser();
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {

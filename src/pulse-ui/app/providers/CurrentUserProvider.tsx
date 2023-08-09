@@ -2,7 +2,6 @@
 
 import { User } from "@/types/User";
 import { Dispatch, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { Session } from "@auth0/nextjs-auth0";
 import { Users_Update_Column, useUpsertUserMutation, useUserByPkLazyQuery } from "@/gql/graphql";
 import { useRouter } from "next/navigation";
@@ -28,13 +27,12 @@ type CurrentUserProviderProps = {
 
 export const CurrentUserProvider = ({ children, session }: CurrentUserProviderProps) => {
     const router = useRouter();
-    const { isLoading: isUserLoading, user: auth0User } = useUser();
     const [user, setUser] = useState<User | null | undefined>(undefined);
     const [getUserByPkQuery] = useUserByPkLazyQuery();
     const [upsertUser] = useUpsertUserMutation();
 
     useEffect(() => {
-        if (isUserLoading || !auth0User || !session) return;
+        if (!session) return;
 
         const getUserByPk = async (userId: string) => {
             const { data, error } = await getUserByPkQuery({ variables: { user_id: userId } });
@@ -60,7 +58,7 @@ export const CurrentUserProvider = ({ children, session }: CurrentUserProviderPr
                         user_name: user.user_name,
                         email: user.email,
                         name: user.name,
-                        picture: auth0User.picture,
+                        picture: session.user.picture,
                         last_login_at: new Date().toISOString(),
                         update_columns: [Users_Update_Column.Picture, Users_Update_Column.LastLoginAt],
                     },
@@ -70,8 +68,8 @@ export const CurrentUserProvider = ({ children, session }: CurrentUserProviderPr
                 setUser(null);
             }
         };
-        getUserByPk(auth0User.sub!);
-    }, [auth0User, getUserByPkQuery, isUserLoading, router, session, upsertUser]);
+        getUserByPk(session.user.sub);
+    }, [getUserByPkQuery, router, session, upsertUser]);
 
     const value = useMemo<CurrentUserContextState>(() => {
         return {

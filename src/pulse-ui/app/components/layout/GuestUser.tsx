@@ -5,15 +5,11 @@ import Tooltip from "@mui/material/Tooltip";
 import FaceIcon from "@mui/icons-material/Face";
 import Link from "next/link";
 
-type GuestUserProps = {
-    isLoading: boolean;
-};
-
-const GuestUser = ({ isLoading }: GuestUserProps) => {
+const GuestUser = () => {
     return (
         <Box sx={{ flexGrow: 0, paddingLeft: 4 }}>
-            <Tooltip title={isLoading ? "" : "Sign In"}>
-                {isLoading ? (
+            <Tooltip title="Sign In">
+                <Link href="/api/auth/login">
                     <IconButton sx={{ p: 0 }}>
                         <Avatar
                             alt="Guest"
@@ -26,22 +22,7 @@ const GuestUser = ({ isLoading }: GuestUserProps) => {
                             <FaceIcon fontSize="large" />
                         </Avatar>
                     </IconButton>
-                ) : (
-                    <Link href="/api/auth/login">
-                        <IconButton sx={{ p: 0 }}>
-                            <Avatar
-                                alt="Guest"
-                                imgProps={{ referrerPolicy: "no-referrer" }}
-                                sx={(theme) => ({
-                                    color: theme.palette.primary.main,
-                                    backgroundColor: "#fff",
-                                })}
-                            >
-                                <FaceIcon fontSize="large" />
-                            </Avatar>
-                        </IconButton>
-                    </Link>
-                )}
+                </Link>
             </Tooltip>
         </Box>
     );

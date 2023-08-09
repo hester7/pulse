@@ -4,9 +4,9 @@ import { AppBar, Avatar, Box, IconButton, Slide, Toolbar, useScrollTrigger } fro
 import { LogoButton } from "./LogoButton";
 import { LogoText } from "./LogoText";
 import { User } from "./User";
-import { UserProfile } from "@auth0/nextjs-auth0/client";
 import GuestUser from "./GuestUser";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import { useCurrentUser } from "@/app/providers/CurrentUserProvider";
 
 function HideOnScroll({ children }: { children: React.ReactElement }) {
     const trigger = useScrollTrigger();
@@ -18,13 +18,8 @@ function HideOnScroll({ children }: { children: React.ReactElement }) {
     );
 }
 
-type TopAppBarProps = {
-    isLoading: boolean;
-    user: UserProfile | undefined;
-};
-
-export default function TopAppBar(props: TopAppBarProps) {
-    const { isLoading, user } = props;
+export default function TopAppBar() {
+    const { user } = useCurrentUser();
 
     return (
         <>
@@ -49,7 +44,7 @@ export default function TopAppBar(props: TopAppBarProps) {
                                 </Avatar>
                             </IconButton>
                         </a>
-                        {!isLoading && user ? <User /> : <GuestUser isLoading={isLoading} />}
+                        {user ? <User /> : <GuestUser />}
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>

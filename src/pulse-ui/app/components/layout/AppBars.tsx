@@ -3,17 +3,17 @@
 import { useState } from "react";
 import { BottomAppBar } from "./BottomAppBar";
 import TopAppBar from "./TopAppBar";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { CreatePost } from "../CreatePost";
 import { Toolbar } from "@mui/material";
 import { SignIn } from "../SignIn";
+import { useCurrentUser } from "@/app/providers/CurrentUserProvider";
 
 type AppBarsProps = {
     children: React.ReactNode;
 };
 
 export const AppBars = ({ children }: AppBarsProps) => {
-    const { isLoading, user } = useUser();
+    const { user } = useCurrentUser();
     const [isCreatePostOpen, setIsCreatePostOpen] = useState(false);
     const [isSignInOpen, setIsSignInOpen] = useState(false);
 
@@ -27,7 +27,7 @@ export const AppBars = ({ children }: AppBarsProps) => {
 
     return (
         <>
-            <TopAppBar isLoading={isLoading} user={user} />
+            <TopAppBar />
             <CreatePost open={isCreatePostOpen} setOpen={setIsCreatePostOpen} />
             <SignIn open={isSignInOpen} setOpen={setIsSignInOpen} />
             {children}
