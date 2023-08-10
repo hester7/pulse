@@ -11,6 +11,7 @@ NOTES:
 
 // TODO: this only has to be a client component because functions cannot be passed directly to Client Components
 // unless you explicitly expose it by marking it with "use server". You have to opt in to Server Actions in order to use them.
+"use client";
 
 import { ApolloLink, DefaultContext, GraphQLRequest, HttpLink, split } from "@apollo/client";
 import { NextSSRInMemoryCache, NextSSRApolloClient, SSRMultipartLink, ApolloNextAppProvider } from "@apollo/experimental-nextjs-app-support/ssr";
