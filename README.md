@@ -1,6 +1,7 @@
 # pulse
 
 https://pulse-hester.vercel.app/
+
 ⚠️ This demo link is currently inactive. Azure resources have been shut down to reduce costs.
 
 ## Demo
@@ -11,7 +12,7 @@ https://pulse-hester.vercel.app/
 
 ### Real-Time Engagement and Profile Exploration
 
-![Real-Time Engagement](demo/demo2.gif)
+![Real-Time Updates](demo/demo2.gif)
 
 ## Project Description
 
